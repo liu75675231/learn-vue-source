@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="app">
+        {{ num }}
+    </div>
+</body>
+<script src="../vue/dist/vue.js"></script>
+<script>
+    var obj = {
+        attr: function () {
+            var app = new Vue({
+                el: "#app",
+                data: function () {
+                    return {
+                        num: 10,
+                    }
+                },
+                async mounted() {
+                    var vm = this;
+                    var teardown = this.$watch("num", function (val, oldval) {
+                        console.log(val === oldval);
+                    }, {
+                        deep: true,
+                    });
+
+
+                    // 实际上，num属性对应的是this._data.num中的属性，而defineProperty也定义的是defineProperty的属性，其this.num 实际上是对this._data.num的一个映射
+                    this.num = 20;
+                    setTimeout(function () {
+                        teardown();
+                    }, 1000);
+                },
+            })
+        }
+    }
+    obj.attr();
+</script>
+</html>
